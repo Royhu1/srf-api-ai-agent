@@ -1,0 +1,11 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+tests/output/
+dist/
+tmp/
+archive/
+*.zh.md
+.claude/worktrees/
+.claude/settings.local.json
