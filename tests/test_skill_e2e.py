@@ -98,5 +98,22 @@ else:
     check("EV charging transactions", True,
           "no charging sessions visible on first EV page (API returned cleanly)")
 
+# 8. raw REST endpoints not wrapped by srf_client (via the skill's helper)
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / ".claude" / "skills" / "srf-data" / "scripts"))
+from srf_common import API_ROOT, make_session
+
+session = make_session()
+r = session.get(f"{API_ROOT}/elevation", params=[("point", "52.198296,0.121913"), ("point", "50.726921,-1.736797")])
+check("REST elevation", r.ok and len(r.json()) == 2, f"{r.status_code} {r.text[:40]}")
+
+r = session.get(f"{API_ROOT}/locations/lookup", params={"point": "52.616236,-0.747297"})
+check("REST reverse geocode", r.ok and "postCode" in r.json(), f"{r.status_code}")
+
+leg = session.get(f"{API_ROOT}/legs", params={"types": "LFC", "size": 1, "includeItems": "false"}).json()
+leg_url = leg["_items"][0]["_location"]
+r = session.get(f"{leg_url}/data", params={"include": "LFC", "minInterval": 60000})
+first = r.text.splitlines()[0] if r.ok and r.text else ""
+check("REST leg data CSV", r.ok and first.split(",")[1:2] == ["LFC"], f"{r.status_code} {first[:40]}")
+
 print(f"\n{PASS} passed, {FAIL} failed")
 sys.exit(1 if FAIL else 0)

@@ -1,3 +1,4 @@
 srf-client>=2.9
 pandas
 python-dotenv
+requests

@@ -9,25 +9,11 @@ Prints JSON: {code: {description, fields: [{name, unit}]}}
 """
 import argparse
 import json
-import os
 import sys
-from pathlib import Path
+
+from srf_common import make_client
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-
-
-def make_client():
-    try:
-        from dotenv import load_dotenv
-        load_dotenv(Path(__file__).resolve().parents[3] / ".env")
-        load_dotenv()
-    except ImportError:
-        pass
-    api_key = os.environ.get("SRF_API_KEY")
-    if not api_key:
-        sys.exit("SRF_API_KEY not set (expected in environment or project .env)")
-    from srf_client import SRFData
-    return SRFData(api_key=api_key)
 
 
 def main():

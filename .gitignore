@@ -9,3 +9,7 @@ archive/
 *.zh.md
 .claude/worktrees/
 .claude/settings.local.json
+data/
+# platform API docs are login-only: keep the local transcription out of the public repo
+.claude/skills/srf-data/references/platform_api.md
+.agents/
